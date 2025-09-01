@@ -1,0 +1,747 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samuele Rosselli - Spezialist für Cybersicherheit & Netzwerke</title>
+    <meta name="description" content="Portfolio von Samuele Rosselli, Spezialist für Cybersicherheit und Netzwerke in Österreich.">
+    <meta name="keywords" content="Cybersicherheit, Netzwerke, IT-Beratung, Samuele Rosselli">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs/lib/anime.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-blue': '#00a8ff',
+                        'cyber-green': '#00ff9d',
+                        'cyber-orange': '#ff5e00',
+                        'dark-bg': '#0a0a0f',
+                        'dark-card': '#15151f'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'mono': ['Roboto Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0a0a0f;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        .cyber-grid {
+            background-image: 
+                linear-gradient(rgba(0, 168, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 168, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .cyber-glow {
+            box-shadow: 0 0 15px rgba(0, 168, 255, 0.5);
+        }
+        .cyber-border {
+            border: 1px solid rgba(0, 168, 255, 0.3);
+        }
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 168, 255, 0.2);
+        }
+        .project-card {
+            transition: all 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 168, 255, 0.25);
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: linear-gradient(to bottom, #00a8ff, #00ff9d);
+        }
+        .mode-toggle {
+            transition: all 0.3s ease;
+        }
+        .mode-toggle:hover {
+            transform: rotate(45deg);
+        }
+        .glitch-effect {
+            position: relative;
+        }
+        .glitch-effect::before, .glitch-effect::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .glitch-effect::before {
+            left: 2px;
+            text-shadow: -2px 0 #00ff9d;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        .glitch-effect::after {
+            left: -2px;
+            text-shadow: -2px 0 #ff5e00;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim {
+            0% { clip: rect(42px, 9999px, 44px, 0); }
+            5% { clip: rect(12px, 9999px, 59px, 0); }
+            10% { clip: rect(48px, 9999px, 29px, 0); }
+            15% { clip: rect(42px, 9999px, 73px, 0); }
+            20% { clip: rect(63px, 9999px, 27px, 0); }
+            25% { clip: rect(34px, 9999px, 55px, 0); }
+            30% { clip: rect(86px, 9999px, 73px, 0); }
+            35% { clip: rect(20px, 9999px, 20px, 0); }
+            40% { clip: rect(26px, 9999px, 60px, 0); }
+            45% { clip: rect(25px, 9999px, 66px, 0); }
+            50% { clip: rect(57px, 9999px, 98px, 0); }
+            55% { clip: rect(5px, 9999px, 46px, 0); }
+            60% { clip: rect(82px, 9999px, 31px, 0); }
+            65% { clip: rect(54px, 9999px, 27px, 0); }
+            70% { clip: rect(28px, 9999px, 99px, 0); }
+            75% { clip: rect(45px, 9999px, 69px, 0); }
+            80% { clip: rect(23px, 9999px, 85px, 0); }
+            85% { clip: rect(54px, 9999px, 84px, 0); }
+            90% { clip: rect(45px, 9999px, 47px, 0); }
+            95% { clip: rect(24px, 9999px, 23px, 0); }
+            100% { clip: rect(32px, 9999px, 92px, 0); }
+        }
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            5% { clip: rect(52px, 9999px, 74px, 0); }
+            10% { clip: rect(79px, 9999px, 85px, 0); }
+            15% { clip: rect(75px, 9999px, 5px, 0); }
+            20% { clip: rect(67px, 9999px, 61px, 0); }
+            25% { clip: rect(14px, 9999px, 79px, 0); }
+            30% { clip: rect(1px, 9999px, 66px, 0); }
+            35% { clip: rect(86px, 9999px, 40px, 0); }
+            40% { clip: rect(23px, 9999px, 98px, 0); }
+            45% { clip: rect(85px, 9999px, 72px, 0); }
+            50% { clip: rect(71px, 9999px, 14px, 0); }
+            55% { clip: rect(90px, 9999px, 82px, 0); }
+            60% { clip: rect(52px, 9999px, 31px, 0); }
+            65% { clip: rect(35px, 9999px, 77px, 0); }
+            70% { clip: rect(40px, 9999px, 64px, 0); }
+            75% { clip: rect(26px, 9999px, 75px, 0); }
+            80% { clip: rect(28px, 9999px, 100px, 0); }
+            85% { clip: rect(28px, 9999px, 98px, 0); }
+            90% { clip: rect(69px, 9999px, 74px, 0); }
+            95% { clip: rect(78px, 9999px, 39px, 0); }
+            100% { clip: rect(7px, 9999px, 68px, 0); }
+        }
+    </style>
+</head>
+<body class="font-sans bg-dark-bg text-gray-200">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-dark-bg/90 backdrop-blur-sm z-50 cyber-border-b border-gray-800">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="index-de.html" class="text-2xl font-bold text-cyber-blue glitch-effect" data-text="S.Rosselli">S.Rosselli</a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="hover:text-cyber-blue transition-colors">Startseite</a>
+                    <a href="#about" class="hover:text-cyber-blue transition-colors">Über mich</a>
+                    <a href="#experience" class="hover:text-cyber-blue transition-colors">Erfahrung</a>
+                    <a href="#portfolio" class="hover:text-cyber-blue transition-colors">Projekte</a>
+                    <a href="#skills" class="hover:text-cyber-blue transition-colors">Fähigkeiten</a>
+                    <a href="#contact" class="hover:text-cyber-blue transition-colors">Kontakt</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <select id="languageSelect" class="bg-dark-bg text-gray-200 cyber-border rounded-md px-2 py-1">
+                        <option value="en">English</option>
+                        <option value="de" selected>Deutsch</option>
+                    </select>
+                    <button id="modeToggle" class="mode-toggle p-2 rounded-full hover:bg-gray-800">
+                        <i data-feather="moon" class="text-cyber-blue"></i>
+                    </button>
+                    <a href="/cv.pdf" download class="px-4 py-2 bg-cyber-blue text-white rounded-md hover:bg-cyber-green transition-colors flex items-center">
+                        <i data-feather="download" class="mr-2"></i> Lebenslauf
+                    </a>
+                    <button class="md:hidden" id="mobileMenuButton">
+                        <i data-feather="menu" class="text-cyber-blue"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-dark-card py-4 px-6 absolute w-full">
+            <div class="flex flex-col space-y-4">
+                <a href="#home" class="hover:text-cyber-blue transition-colors">Startseite</a>
+                <a href="#about" class="hover:text-cyber-blue transition-colors">Über mich</a>
+                <a href="#experience" class="hover:text-cyber-blue transition-colors">Erfahrung</a>
+                <a href="#portfolio" class="hover:text-cyber-blue transition-colors">Projekte</a>
+                <a href="#skills" class="hover:text-cyber-blue transition-colors">Fähigkeiten</a>
+                <a href="#contact" class="hover:text-cyber-blue transition-colors">Kontakt</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center cyber-grid relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-dark-bg/80 to-dark-bg"></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="md:w-1/2 mb-12 md:mb-0" data-aos="fade-right">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-4">Samuele <span class="text-cyber-blue">Rosselli</span></h1>
+                    <h2 class="text-xl md:text-2xl text-cyber-green mb-6 font-mono">Spezialist für Cybersicherheit & Netzwerke</h2>
+                    <p class="text-lg mb-8 text-gray-300">Sicherung digitaler Umgebungen und Aufbau robuster Netzwerkinfrastrukturen mit Präzision und Expertise.</p>
+                    <div class="flex space-x-4">
+                        <a href="#portfolio" class="px-6 py-3 bg-cyber-blue text-white rounded-md hover:bg-cyber-green transition-colors">Meine Arbeiten ansehen</a>
+                        <a href="#contact" class="px-6 py-3 cyber-border text-cyber-blue rounded-md hover:bg-cyber-blue/10 transition-colors">Kontaktieren Sie mich</a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center" data-aos="fade-left">
+                    <div class="relative">
+                        <div class="w-64 h-64 md:w-80 md:h-80 bg-cyber-blue/20 rounded-full absolute -z-10 animate-pulse"></div>
+                        <img src="https://placehold.co/400x400/15151f/00a8ff?text=S.Rosselli" alt="Samuele Rosselli" class="w-64 h-64 md:w-80 md:h-80 rounded-full object-cover cyber-glow">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-dark-card">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-16 text-cyber-blue" data-aos="fade-up">Über mich</h2>
+            <div class="flex flex-col md:flex-row items-center mb-16">
+                <div class="md:w-1/2 mb-8 md:mb-0" data-aos="fade-right">
+                    <p class="text-lg mb-6">Ich bin ein leidenschaftlicher Spezialist für Cybersicherheit und Netzwerke mit einem Antrieb, komplexe technische Herausforderungen zu lösen. Meine Reise in die Technologie begann mit der Neugier, wie Systeme funktionieren, und hat sich zu einer professionellen Karriere entwickelt, die sich der Sicherung digitaler Umgebungen widmet.</p>
+                    <p class="text-lg mb-6">Ich glaube an proaktive Sicherheitsmaßnahmen und robustes Netzwerkdesign, um Probleme zu verhindern, bevor sie auftreten. Mein Ansatz kombiniert technische Expertise mit klarer Kommunikation, um Lösungen zu liefern, die sowohl Sicherheitsanforderungen als auch Geschäftsbedürfnisse erfüllen.</p>
+                    <p class="text-lg">Wenn ich nicht gerade Netzwerke konfiguriere oder Sicherheitsprotokolle analysiere, halte ich mich über die neuesten Trends in der Cybersicherheit auf dem Laufenden und experimentiere mit neuen Technologien.</p>
+                </div>
+                <div class="md:w-1/2 md:pl-12" data-aos="fade-left">
+                    <div class="relative pl-8 timeline">
+                        <div class="mb-8 relative">
+                            <div class="absolute -left-11 w-8 h-8 rounded-full bg-cyber-blue flex items-center justify-center">
+                                <i data-feather="book" class="text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Gymnasialausbildung</h3>
+                            <p class="text-cyber-green">Sprachstudien</p>
+                            <p class="text-gray-400">Entwicklung starker Kommunikationsfähigkeiten und kulturelles Verständnis</p>
+                        </div>
+                        <div class="mb-8 relative">
+                            <div class="absolute -left-11 w-8 h-8 rounded-full bg-cyber-green flex items-center justify-center">
+                                <i data-feather="award" class="text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">CompTIA Network+</h3>
+                            <p class="text-cyber-green">Netzwerk-Zertifizierung</p>
+                            <p class="text-gray-400">Bestätigte Expertise in der Konfiguration und Fehlerbehebung von Netzwerken</p>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute -left-11 w-8 h-8 rounded-full bg-cyber-orange flex items-center justify-center">
+                                <i data-feather="shield" class="text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">CompTIA Security+</h3>
+                            <p class="text-cyber-green">Cybersicherheits-Zertifizierung</p>
+                            <p class="text-gray-400">Nachgewiesenes Wissen über Sicherheitsprotokolle und Bedrohungsabwehr</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8" data-aos="fade-up">
+                <div class="p-6 cyber-border rounded-lg">
+                    <h3 class="text-xl font-semibold mb-4 text-cyber-blue flex items-center">
+                        <i data-feather="cpu" class="mr-2"></i> Technische Fähigkeiten
+                    </h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center"><i data-feather="check" class="text-cyber-green mr-2"></i> Kritisches Denken & Analyse</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-cyber-green mr-2"></i> Liebe zum Detail</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-cyber-green mr-2"></i> Systematische Fehlerbehebung</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-cyber-green mr-2"></i> Technische Dokumentation</li>
+                    </ul>
+                </div>
+                <div class="p-6 cyber-border rounded-lg">
+                    <h3 class="text-xl font-semibold mb-4 text-cyber-blue flex items-center">
+                        <i data-feather="users" class="mr-2"></i> Soft Skills
+                    </h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center"><i data-feather="check" class="text-cyber-green mr-2"></i> Kundenkommunikation</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-cyber-green mr-2"></i> Projektmanagement</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-cyber-green mr-2"></i> Problemlösung</li>
+                        <li class="flex items-center"><i data-feather="check" class="text-cyber-green mr-2"></i> Anpassungsfähigkeit</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="py-20 bg-dark-bg">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-16 text-cyber-blue" data-aos="fade-up">Berufserfahrung</h2>
+            <div class="space-y-12">
+                <div class="flex flex-col md:flex-row" data-aos="fade-up">
+                    <div class="md:w-1/4 mb-4 md:mb-0">
+                        <p class="text-cyber-green">Gegenwart</p>
+                        <h3 class="text-xl font-semibold">Freiberuflicher Berater</h3>
+                    </div>
+                    <div class="md:w-3/4 cyber-border-l md:pl-8 pl-0 border-gray-700 md:border-l md:border-t-0 border-t pt-4 md:pt-0">
+                        <p class="mb-4">Bereitstellung maßgeschneiderter technischer Lösungen für private und geschäftliche Kunden mit Fokus auf Cybersicherheit, Netzwerkkonfiguration und technische Fehlerbehebung.</p>
+                        <ul class="space-y-2">
+                            <li class="flex items-start"><i data-feather="chevron-right" class="text-cyber-blue mr-2 mt-1"></i> Entwicklung und Implementierung sicherer Netzwerkinfrastrukturen für kleine Unternehmen</li>
+                            <li class="flex items-start"><i data-feather="chevron-right" class="text-cyber-blue mr-2 mt-1"></i> Durchführung von Sicherheitsprüfungen und Schwachstellenanalysen</li>
+                            <li class="flex items-start"><i data-feather="chevron-right" class="text-cyber-blue mr-2 mt-1"></i> Bereitstellung fortlaufender technischer Unterstützung und Wartungsdienste</li>
+                            <li class="flex items-start"><i data-feather="chevron-right" class="text-cyber-blue mr-2 mt-1"></i> Entwicklung maßgeschneiderter technologischer Lösungen basierend auf Kundenbedürfnissen</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex flex-col md:flex-row" data-aos="fade-up">
+                    <div class="md:w-1/4 mb-4 md:mb-0">
+                        <p class="text-cyber-green">2022 - 2023</p>
+                        <h3 class="text-xl font-semibold">Stiwa</h3>
+                        <p class="text-gray-400">Technischer Mitarbeiter</p>
+                    </div>
+                    <div class="md:w-3/4 cyber-border-l md:pl-8 pl-0 border-gray-700 md:border-l md:border-t-0 border-t pt-4 md:pt-0">
+                        <p class="mb-4">Mitarbeit an einem Razer-Mausprojekt in einer Fertigungsumgebung für Autokomponenten, Anwendung technischer Expertise zur Verbesserung der Produktentwicklung.</p>
+                        <ul class="space-y-2">
+                            <li class="flex items-start"><i data-feather="chevron-right" class="text-cyber-blue mr-2 mt-1"></i> Zusammenarbeit mit Ingenieurteams an technischen Spezifikationen</li>
+                            <li class="flex items-start"><i data-feather="chevron-right" class="text-cyber-blue mr-2 mt-1"></i> Unterstützung bei Fehlerbehebung und Qualitätssicherungsprozessen</li>
+                            <li class="flex items-start"><i data-feather="chevron-right" class="text-cyber-blue mr-2 mt-1"></i> Bereitstellung technischer Einblicke zur Produktverbesserung</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex flex-col md:flex-row" data-aos="fade-up">
+                    <div class="md:w-1/4 mb-4 md:mb-0">
+                        <p class="text-cyber-green">2017 - 2022</p>
+                        <h3 class="text-xl font-semibold">Global Blue</h3>
+                        <p class="text-gray-400">Steuerrückerstatter</p>
+                    </div>
+                    <div class="md:w-3/4 cyber-border-l md:pl-8 pl-0 border-gray-700 md:border-l md:border-t-0 border-t pt-4 md:pt-0">
+                        <p class="mb-4">Arbeit für 5 Jahre bei Europas führendem Steuerrückerstattungsunternehmen, Entwicklung starker analytischer und Kundenservice-Fähigkeiten in einer technischen Umgebung.</p>
+                        <ul class="space-y-2">
+                            <li class="flex items-start"><i data-feather="chevron-right" class="text-cyber-blue mr-2 mt-1"></i> Präzise Verarbeitung komplexer Steuerrückerstattungsdokumentation</li>
+                            <li class="flex items-start"><i data-feather="chevron-right" class="text-cyber-blue mr-2 mt-1"></i> Nutzung proprietärer Softwaresysteme für Datenmanagement</li>
+                            <li class="flex items-start"><i data-feather="chevron-right" class="text-cyber-blue mr-2 mt-1"></i> Entwicklung effizienter Arbeitsabläufe für die Verarbeitung hoher Transaktionsvolumen</li>
+                            <li class="flex items-start"><i data-feather="chevron-right" class="text-cyber-blue mr-2 mt-1"></i> Bereitstellung technischer Unterstützung für Kollegen bei der Systemnutzung</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-20 bg-dark-card">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-16 text-cyber-blue" data-aos="fade-up">Ausgewählte Projekte</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="project-card bg-dark-bg cyber-border rounded-lg overflow-hidden" data-aos="fade-up">
+                    <div class="h-48 bg-gray-800 overflow-hidden">
+                        <img src="https://placehold.co/600x400/15151f/00a8ff?text=Überwachungssystem" alt="Beachbar Überwachung" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 text-cyber-green">Beachbar Überwachung</h3>
+                        <p class="text-gray-400 mb-4">Installation und Konfiguration von 7 Überwachungskameras mit NVR-System für umfassende Überwachung.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-cyber-blue/20 text-cyber-blue rounded-full text-sm">Überwachung</span>
+                            <span class="px-3 py-1 bg-cyber-blue/20 text-cyber-blue rounded-full text-sm">NVR</span>
+                            <span class="px-3 py-1 bg-cyber-blue/20 text-cyber-blue rounded-full text-sm">Sicherheit</span>
+                        </div>
+                        <a href="beachbar-surveillance-de.html" class="text-cyber-blue hover:text-cyber-green flex items-center">
+                            <span>Details anzeigen</span>
+                            <i data-feather="arrow-right" class="ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="project-card bg-dark-bg cyber-border rounded-lg overflow-hidden" data-aos="fade-up">
+                    <div class="h-48 bg-gray-800 overflow-hidden">
+                        <img src="https://placehold.co/600x400/15151f/00ff9d?text=Restaurant+Sicherheit" alt="Strandbad Restaurant Überwachung" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 text-cyber-green">Strandbad Restaurant Überwachung</h3>
+                        <p class="text-gray-400 mb-4">Entwurf und Implementierung eines 10-Kamera-Sicherheitssystems mit fortschrittlicher NVR-Konfiguration.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-cyber-green/20 text-cyber-green rounded-full text-sm">Sicherheit</span>
+                            <span class="px-3 py-1 bg-cyber-green/20 text-cyber-green rounded-full text-sm">Konfiguration</span>
+                            <span class="px-3 py-1 bg-cyber-green/20 text-cyber-green rounded-full text-sm">Überwachung</span>
+                        </div>
+                        <a href="restaurant-surveillance-de.html" class="text-cyber-green hover:text-cyber-blue flex items-center">
+                            <span>Details anzeigen</span>
+                            <i data-feather="arrow-right" class="ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="project-card bg-dark-bg cyber-border rounded-lg overflow-hidden" data-aos="fade-up">
+                    <div class="h-48 bg-gray-800 overflow-hidden">
+                        <img src="https://placehold.co/600x400/15151f/ff5e00?text=KI+Pizza+App" alt="KI Pizza App" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 text-cyber-orange">KI Pizza App</h3>
+                        <p class="text-gray-400 mb-4">Entwicklung einer benutzerdefinierten Anwendung mit Pizzrezepten, Werkzeugshop und KI-Integration für personalisierte Empfehlungen.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-cyber-orange/20 text-cyber-orange rounded-full text-sm">KI</span>
+                            <span class="px-3 py-1 bg-cyber-orange/20 text-cyber-orange rounded-full text-sm">App-Entwicklung</span>
+                            <span class="px-3 py-1 bg-cyber-orange/20 text-cyber-orange rounded-full text-sm">E-Commerce</span>
+                        </div>
+                        <a href="ai-pizza-app-de.html" class="text-cyber-orange hover:text-cyber-green flex items-center">
+                            <span>Details anzeigen</span>
+                            <i data-feather="arrow-right" class="ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="project-card bg-dark-bg cyber-border rounded-lg overflow-hidden" data-aos="fade-up">
+                    <div class="h-48 bg-gray-800 overflow-hidden">
+                        <img src="https://placehold.co/600x400/15151f/00a8ff?text=Netzwerk+Lösungen" alt="Netzwerk Lösungen" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 text-cyber-green">Netzwerk Lösungen</h3>
+                        <p class="text-gray-400 mb-4">Umfassende Netzwerkdienste einschließlich Druckereinrichtung, Switch-Konfigurationen und NVR-Implementierungen.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-cyber-blue/20 text-cyber-blue rounded-full text-sm">Netzwerke</span>
+                            <span class="px-3 py-1 bg-cyber-blue/20 text-cyber-blue rounded-full text-sm">Hardware</span>
+                            <span class="px-3 py-1 bg-cyber-blue/20 text-cyber-blue rounded-full text-sm">Fehlerbehebung</span>
+                        </div>
+                        <a href="networking-solutions-de.html" class="text-cyber-blue hover:text-cyber-green flex items-center">
+                            <span>Details anzeigen</span>
+                            <i data-feather="arrow-right" class="ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="project-card bg-dark-bg cyber-border rounded-lg overflow-hidden" data-aos="fade-up">
+                    <div class="h-48 bg-gray-800 overflow-hidden">
+                        <img src="https://placehold.co/600x400/15151f/00ff9d?text=Lulzim.at+Website" alt="Lulzim.at Website" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 text-cyber-green">Lulzim.at Website</h3>
+                        <p class="text-gray-400 mb-4">Entwicklung einer stark frequentierten Website mit über 10.000 Aufrufen pro Monat und einer Tischreservierungs-App, die über 1.500 Gäste monatlich bedient.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-cyber-green/20 text-cyber-green rounded-full text-sm">Webentwicklung</span>
+                            <span class="px-3 py-1 bg-cyber-green/20 text-cyber-green rounded-full text-sm">Tischreservierung</span>
+                            <span class="px-3 py-1 bg-cyber-green/20 text-cyber-green rounded-full text-sm">Hoher Traffic</span>
+                        </div>
+                        <a href="lulzim-website-de.html" class="text-cyber-green hover:text-cyber-blue flex items-center">
+                            <span>Details anzeigen</span>
+                            <i data-feather="arrow-right" class="ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 bg-dark-bg">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-16 text-cyber-blue" data-aos="fade-up">Technische Fähigkeiten</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                <div data-aos="fade-right">
+                    <h3 class="text-xl font-semibold mb-6 text-cyber-blue flex items-center">
+                        <i data-feather="settings" class="mr-2"></i> Netzwerke
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="skill-card p-4 cyber-border rounded-lg hover:bg-dark-card transition-all">
+                            <div class="flex items-center mb-2">
+                                <i data-feather="hard-drive" class="text-cyber-blue mr-2"></i>
+                                <h4 class="font-medium">Netzwerkkonfiguration</h4>
+                            </div>
+                            <p class="text-sm text-gray-400">Entwurf und Implementierung robuster Netzwerkinfrastrukturen</p>
+                        </div>
+                        <div class="skill-card p-4 cyber-border rounded-lg hover:bg-dark-card transition-all">
+                            <div class="flex items-center mb-2">
+                                <i data-feather="wifi" class="text-cyber-blue mr-2"></i>
+                                <h4 class="font-medium">Switch & NVR Einrichtung</h4>
+                            </div>
+                            <p class="text-sm text-gray-400">Konfiguration von Netzwerkgeräten für optimale Leistung</p>
+                        </div>
+                        <div class="skill-card p-4 cyber-border rounded-lg hover:bg-dark-card transition-all">
+                            <div class="flex items-center mb-2">
+                                <i data-feather="printer" class="text-cyber-blue mr-2"></i>
+                                <h4 class="font-medium">Drucker-Fehlerbehebung</h4>
+                            </div>
+                            <p class="text-sm text-gray-400">Diagnose und Lösung von Drucker-Verbindungsproblemen</p>
+                        </div>
+                        <div class="skill-card p-4 cyber-border rounded-lg hover:bg-dark-card transition-all">
+                            <div class="flex items-center mb-2">
+                                <i data-feather="bar-chart-2" class="text-cyber-blue mr-2"></i>
+                                <h4 class="font-medium">Netzwerküberwachung</h4>
+                            </div>
+                            <p class="text-sm text-gray-400">Implementierung von Überwachungslösungen für Netzwerkgesundheit</p>
+                        </div>
+                    </div>
+                </div>
+                <div data-aos="fade-left">
+                    <h3 class="text-xl font-semibold mb-6 text-cyber-green flex items-center">
+                        <i data-feather="shield" class="mr-2"></i> Cybersicherheit
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="skill-card p-4 cyber-border rounded-lg hover:bg-dark-card transition-all">
+                            <div class="flex items-center mb-2">
+                                <i data-feather="search" class="text-cyber-green mr-2"></i>
+                                <h4 class="font-medium">Auditing</h4>
+                            </div>
+                            <p class="text-sm text-gray-400">Durchführung umfassender Sicherheitsbewertungen</p>
+                        </div>
+                        <div class="skill-card p-4 cyber-border rounded-lg hover:bg-dark-card transition-all">
+                            <div class="flex items-center mb-2">
+                                <i data-feather="activity" class="text-cyber-green mr-2"></i>
+                                <h4 class="font-medium">Cybersicherheitsoperationen</h4>
+                            </div>
+                            <p class="text-sm text-gray-400">Implementierung und Verwaltung von Sicherheitsprotokollen</p>
+                        </div>
+                        <div class="skill-card p-4 cyber-border rounded-lg hover:bg-dark-card transition-all">
+                            <div class="flex items-center mb-2">
+                                <i data-feather="alert-triangle" class="text-cyber-green mr-2"></i>
+                                <h4 class="font-medium">Bedrohungserkennung</h4>
+                            </div>
+                            <p class="text-sm text-gray-400">Erkennung und Abwehr von Sicherheitsbedrohungen</p>
+                        </div>
+                        <div class="skill-card p-4 cyber-border rounded-lg hover:bg-dark-card transition-all">
+                            <div class="flex items-center mb-2">
+                                <i data-feather="lock" class="text-cyber-green mr-2"></i>
+                                <h4 class="font-medium">Zugangskontrolle</h4>
+                            </div>
+                            <p class="text-sm text-gray-400">Implementierung sicherer Authentifizierungssysteme</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-aos="fade-up">
+                <h3 class="text-xl font-semibold mb-6 text-cyber-orange flex items-center">
+                    <i data-feather="tool" class="mr-2"></i> Zusätzliche Fähigkeiten
+                </h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    <div class="skill-card p-4 cyber-border rounded-lg hover:bg-dark-card transition-all text-center">
+                        <i data-feather="clipboard" class="text-cyber-orange mx-auto mb-2"></i>
+                        <h4 class="font-medium">Technische Beratung</h4>
+                    </div>
+                    <div class="skill-card p-4 cyber-border rounded-lg hover:bg-dark-card transition-all text-center">
+                        <i data-feather="code" class="text-cyber-orange mx-auto mb-2"></i>
+                        <h4 class="font-medium">Problemlösung</h4>
+                    </div>
+                    <div class="skill-card p-4 cyber-border rounded-lg hover:bg-dark-card transition-all text-center">
+                        <i data-feather="message-square" class="text-cyber-orange mx-auto mb-2"></i>
+                        <h4 class="font-medium">Kundenkommunikation</h4>
+                    </div>
+                    <div class="skill-card p-4 cyber-border rounded-lg hover:bg-dark-card transition-all text-center">
+                        <i data-feather="book-open" class="text-cyber-orange mx-auto mb-2"></i>
+                        <h4 class="font-medium">Technische Dokumentation</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-dark-card">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-16 text-cyber-blue" data-aos="fade-up">Kontakt aufnehmen</h2>
+            <div class="flex flex-col md:flex-row gap-12">
+                <div class="md:w-1/2" data-aos="fade-right">
+                    <form id="contactForm" class="space-y-6">
+                        <div>
+                            <label for="name" class="block mb-2 text-gray-300">Ihr Name</label>
+                            <input type="text" id="name" name="name" required class="w-full px-4 py-3 bg-dark-bg cyber-border rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-blue">
+                        </div>
+                        <div>
+                            <label for="email" class="block mb-2 text-gray-300">E-Mail-Adresse</label>
+                            <input type="email" id="email" name="email" required class="w-full px-4 py-3 bg-dark-bg cyber-border rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-blue">
+                        </div>
+                        <div>
+                            <label for="message" class="block mb-2 text-gray-300">Ihre Nachricht</label>
+                            <textarea id="message" name="message" rows="5" required class="w-full px-4 py-3 bg-dark-bg cyber-border rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-blue"></textarea>
+                        </div>
+                        <button type="submit" class="w-full px-6 py-3 bg-cyber-blue text-white rounded-md hover:bg-cyber-green transition-colors">Nachricht senden</button>
+                    </form>
+                </div>
+                <div class="md:w-1/2" data-aos="fade-left">
+                    <div class="space-y-8">
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4 text-cyber-green">Kontaktinformationen</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <i data-feather="mail" class="text-cyber-blue mr-4 mt-1"></i>
+                                    <div>
+                                        <p class="font-medium">E-Mail</p>
+                                        <a href="mailto:samuele.rosselli97@gmail.com" class="text-gray-400 hover:text-cyber-blue">samuele.rosselli97@gmail.com</a>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i data-feather="phone" class="text-cyber-blue mr-4 mt-1"></i>
+                                    <div>
+                                        <p class="font-medium">Telefon</p>
+                                        <a href="tel:+436607733492" class="text-gray-400 hover:text-cyber-blue">+43 6607733492</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4 text-cyber-green">Antwortzeit</h3>
+                            <p class="text-gray-400">Ich antworte in der Regel innerhalb von 24 Stunden auf E-Mails. Bei dringenden Angelegenheiten rufen Sie mich bitte direkt an oder senden Sie eine SMS.</p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4 text-cyber-green">Verfügbarkeit</h3>
+                            <p class="text-gray-400">Ich bin derzeit für freiberufliche Beratungsprojekte verfügbar und offen für die Diskussion neuer Möglichkeiten in den Bereichen Cybersicherheit und Netzwerke.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-dark-bg cyber-border-t border-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <p class="text-gray-400">&copy; 2023 Samuele Rosselli. Alle Rechte vorbehalten.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-cyber-blue">
+                        <i data-feather="mail"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-cyber-blue">
+                        <i data-feather="phone"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-cyber-blue">
+                        <i data-feather="linkedin"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-cyber-blue">
+                        <i data-feather="github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
+            feather.replace();
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            const modeToggle = document.getElementById('modeToggle');
+            const html = document.documentElement;
+            const modeIcon = modeToggle.querySelector('i');
+            modeToggle.addEventListener('click', function() {
+                html.classList.toggle('dark');
+                if (html.classList.contains('dark')) {
+                    modeIcon.setAttribute('data-feather', 'moon');
+                    feather.replace();
+                } else {
+                    modeIcon.setAttribute('data-feather', 'sun');
+                    feather.replace();
+                }
+            });
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+            emailjs.init("YOUR_PUBLIC_KEY"); // Ersetze mit deinem EmailJS Public Key
+            document.getElementById('contactForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    message: document.getElementById('message').value
+                };
+                emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', formData)
+                    .then(function(response) {
+                        alert('Nachricht erfolgreich gesendet!');
+                        document.getElementById('contactForm').reset();
+                    }, function(error) {
+                        alert('Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.');
+                        console.error('EmailJS Fehler:', error);
+                    });
+            });
+            const skillCards = document.querySelectorAll('.skill-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            skillCards.forEach(card => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
+            });
+            const languageSelect = document.getElementById('languageSelect');
+            languageSelect.addEventListener('change', function() {
+                const lang = this.value;
+                if (lang === 'en') {
+                    window.location.href = 'index.html';
+                } else {
+                    window.location.href = 'index-de.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
