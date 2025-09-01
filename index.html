@@ -164,6 +164,10 @@
                 </div>
                 
                 <div class="flex items-center space-x-4">
+                    <select id="languageToggle" class="p-2 bg-dark-card text-white rounded-md">
+                        <option value="en" selected>EN</option>
+                        <option value="de">DE</option>
+                    </select>
                     <button id="modeToggle" class="mode-toggle p-2 rounded-full hover:bg-gray-800">
                         <i data-feather="moon" class="text-cyber-blue"></i>
                     </button>
@@ -361,7 +365,7 @@
                             <span class="px-3 py-1 bg-cyber-blue/20 text-cyber-blue rounded-full text-sm">NVR</span>
                             <span class="px-3 py-1 bg-cyber-blue/20 text-cyber-blue rounded-full text-sm">Security</span>
                         </div>
-                        <a href="#" class="text-cyber-blue hover:text-cyber-green flex items-center">
+                        <a href="beachbar-surveillance.html" class="text-cyber-blue hover:text-cyber-green flex items-center">
                             <span>View Details</span>
                             <i data-feather="arrow-right" class="ml-2"></i>
                         </a>
@@ -380,7 +384,7 @@
                             <span class="px-3 py-1 bg-cyber-green/20 text-cyber-green rounded-full text-sm">Configuration</span>
                             <span class="px-3 py-1 bg-cyber-green/20 text-cyber-green rounded-full text-sm">Monitoring</span>
                         </div>
-                        <a href="#" class="text-cyber-green hover:text-cyber-blue flex items-center">
+                        <a href="restaurant-surveillance.html" class="text-cyber-green hover:text-cyber-blue flex items-center">
                             <span>View Details</span>
                             <i data-feather="arrow-right" class="ml-2"></i>
                         </a>
@@ -399,7 +403,7 @@
                             <span class="px-3 py-1 bg-cyber-orange/20 text-cyber-orange rounded-full text-sm">App Development</span>
                             <span class="px-3 py-1 bg-cyber-orange/20 text-cyber-orange rounded-full text-sm">E-commerce</span>
                         </div>
-                        <a href="#" class="text-cyber-orange hover:text-cyber-green flex items-center">
+                        <a href="ai-pizza-app.html" class="text-cyber-orange hover:text-cyber-green flex items-center">
                             <span>View Details</span>
                             <i data-feather="arrow-right" class="ml-2"></i>
                         </a>
@@ -418,7 +422,26 @@
                             <span class="px-3 py-1 bg-cyber-blue/20 text-cyber-blue rounded-full text-sm">Hardware</span>
                             <span class="px-3 py-1 bg-cyber-blue/20 text-cyber-blue rounded-full text-sm">Troubleshooting</span>
                         </div>
-                        <a href="#" class="text-cyber-blue hover:text-cyber-green flex items-center">
+                        <a href="networking-solutions.html" class="text-cyber-blue hover:text-cyber-green flex items-center">
+                            <span>View Details</span>
+                            <i data-feather="arrow-right" class="ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card bg-dark-bg cyber-border rounded-lg overflow-hidden" data-aos="fade-up">
+                    <div class="h-48 bg-gray-800 overflow-hidden">
+                        <img src="https://placehold.co/600x400/15151f/00ff9d?text=Lulzim.at+Website" alt="Lulzim.at Website" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2 text-cyber-green">Lulzim.at Website</h3>
+                        <p class="text-gray-400 mb-4">Developed a high-traffic website generating over 10,000 views per month, with a table reservation app accommodating 1,500+ guests monthly.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-cyber-green/20 text-cyber-green rounded-full text-sm">Web Development</span>
+                            <span class="px-3 py-1 bg-cyber-green/20 text-cyber-green rounded-full text-sm">Table Reservation</span>
+                            <span class="px-3 py-1 bg-cyber-green/20 text-cyber-green rounded-full text-sm">High Traffic</span>
+                        </div>
+                        <a href="lulzim-website.html" class="text-cyber-green hover:text-cyber-blue flex items-center">
                             <span>View Details</span>
                             <i data-feather="arrow-right" class="ml-2"></i>
                         </a>
@@ -622,7 +645,6 @@
                     <a href="#" class="text-gray-400 hover:text-cyber-blue">
                         <i data-feather="phone"></i>
                     </a>
-                    <!-- Placeholder for future social links -->
                     <a href="#" class="text-gray-400 hover:text-cyber-blue">
                         <i data-feather="linkedin"></i>
                     </a>
@@ -635,7 +657,6 @@
     </footer>
 
     <script>
-        // Initialize animations
         document.addEventListener('DOMContentLoaded', function() {
             AOS.init({
                 duration: 800,
@@ -645,7 +666,6 @@
             
             feather.replace();
             
-            // Mobile menu toggle
             const mobileMenuButton = document.getElementById('mobileMenuButton');
             const mobileMenu = document.getElementById('mobileMenu');
             
@@ -653,7 +673,6 @@
                 mobileMenu.classList.toggle('hidden');
             });
             
-            // Dark/light mode toggle
             const modeToggle = document.getElementById('modeToggle');
             const html = document.documentElement;
             const modeIcon = modeToggle.querySelector('i');
@@ -670,7 +689,6 @@
                 }
             });
             
-            // Smooth scrolling for navigation links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -685,27 +703,23 @@
                             behavior: 'smooth'
                         });
                         
-                        // Close mobile menu if open
                         mobileMenu.classList.add('hidden');
                     }
                 });
             });
             
-            // EmailJS initialization and form handling
             emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS public key
             
             document.getElementById('contactForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                // Get form data
                 const formData = {
                     name: document.getElementById('name').value,
                     email: document.getElementById('email').value,
                     message: document.getElementById('message').value
                 };
                 
-                // Send email using EmailJS
-                emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', formData) // Replace with your service ID and template ID
+                emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', formData)
                     .then(function(response) {
                         alert('Message sent successfully!');
                         document.getElementById('contactForm').reset();
@@ -715,7 +729,6 @@
                     });
             });
             
-            // Add subtle animations to skill cards on scroll
             const skillCards = document.querySelectorAll('.skill-card');
             
             const observer = new IntersectionObserver((entries) => {
@@ -732,6 +745,26 @@
                 card.style.transform = 'translateY(20px)';
                 card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
                 observer.observe(card);
+            });
+
+            // Language toggle
+            const languageToggle = document.getElementById('languageToggle');
+            languageToggle.addEventListener('change', function() {
+                const lang = this.value;
+                const currentPath = window.location.pathname;
+                if (lang === 'de') {
+                    if (currentPath.endsWith('.html')) {
+                        window.location.href = currentPath.replace('.html', '-de.html');
+                    } else {
+                        window.location.href = 'index-de.html';
+                    }
+                } else {
+                    if (currentPath.endsWith('-de.html')) {
+                        window.location.href = currentPath.replace('-de.html', '.html');
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                }
             });
         });
     </script>
