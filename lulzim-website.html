@@ -109,12 +109,40 @@
             100% { clip: rect(7px, 9999px, 68px, 0); }
         }
         .image-card {
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            cursor: pointer;
+            transition: box-shadow 0.4s ease;
         }
         .image-card:hover {
-            transform: scale(1.1);
             box-shadow: 0 0 30px rgba(0, 255, 157, 0.7);
-            z-index: 10;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+        }
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border: 2px solid #00a8ff;
+            box-shadow: 0 0 20px rgba(0, 168, 255, 0.8);
+        }
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #00ff9d;
+            font-size: 30px;
+            cursor: pointer;
+            text-shadow: 0 0 10px rgba(0, 255, 157, 0.7);
         }
         .back-button:hover {
             box-shadow: 0 0 25px rgba(0, 255, 157, 0.7);
@@ -171,6 +199,10 @@
 </head>
 <body class="bg-dark-bg text-gray-200">
     <div id="particles-js"></div>
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img id="modalImage" src="" alt="Full resolution image">
+    </div>
     <nav class="fixed w-full bg-dark-bg/90 backdrop-blur-sm z-50 cyber-border-b border-gray-800">
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
@@ -198,32 +230,32 @@
                     </p>
                     <h3 class="text-xl font-semibold text-cyber-blue neon-text mb-4">What I Did</h3>
                     <ul class="space-y-2 text-gray-300">
-                        <li class="flex items-start"><i data-feather="check" class="text-cyber-green mr-2 mt-1"></i> Designed a responsive website using HTML, CSS, and JavaScript.</li>
-                        <li class="flex items-start"><i data-feather="check" class="text-cyber-green mr-2 mt-1"></i> Integrated a content management system for easy updates.</li>
-                        <li class="flex items-start"><i data-feather="check" class="text-cyber-green mr-2 mt-1"></i> Optimized for SEO and fast loading times.</li>
-                        <li class="flex items-start"><i data-feather="check" class="text-cyber-green mr-2 mt-1"></i> Ensured cross-browser compatibility and accessibility compliance.</li>
+                        <li class="flex items-start"><i data-feather="check" class="text-cyber-green mr-2 mt-1"></i> Created a visually striking website using modern frameworks like React and Tailwind CSS.</li>
+                        <li class="flex items-start"><i data-feather="check" class="text-cyber-green mr-2 mt-1"></i> Implemented a custom design with cyberpunk-inspired aesthetics, including neon effects and animations.</li>
+                        <li class="flex items-start"><i data-feather="check" class="text-cyber-green mr-2 mt-1"></i> Integrated a multilingual system for English and German content.</li>
+                        <li class="flex items-start"><i data-feather="check" class="text-cyber-green mr-2 mt-1"></i> Deployed the website with optimized performance and mobile responsiveness.</li>
                     </ul>
                 </div>
                 <div data-aos="zoom-in" data-aos-delay="200">
                     <h2 class="text-2xl font-semibold text-cyber-green neon-text mb-4">Project Images</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                         <div class="image-card cyber-border cyber-glow rounded-md overflow-hidden">
-                            <img src="images/lulzim-website1.jpg" alt="Lulzim Website 1" class="w-full h-48 object-cover">
+                            <img src="images/lulzim-website1.jpg" alt="Lulzim Website 1" class="w-full h-48 object-cover" onclick="openModal('images/lulzim-website1.jpg')">
                         </div>
                         <div class="image-card cyber-border cyber-glow rounded-md overflow-hidden">
-                            <img src="images/lulzim-website2.jpg" alt="Lulzim Website 2" class="w-full h-48 object-cover">
+                            <img src="images/lulzim-website2.jpg" alt="Lulzim Website 2" class="w-full h-48 object-cover" onclick="openModal('images/lulzim-website2.jpg')">
                         </div>
                         <div class="image-card cyber-border cyber-glow rounded-md overflow-hidden">
-                            <img src="images/lulzim-website3.jpg" alt="Lulzim Website 3" class="w-full h-48 object-cover">
+                            <img src="images/lulzim-website3.jpg" alt="Lulzim Website 3" class="w-full h-48 object-cover" onclick="openModal('images/lulzim-website3.jpg')">
                         </div>
                         <div class="image-card cyber-border cyber-glow rounded-md overflow-hidden">
-                            <img src="images/lulzim-website4.jpg" alt="Lulzim Website 4" class="w-full h-48 object-cover">
+                            <img src="images/lulzim-website4.jpg" alt="Lulzim Website 4" class="w-full h-48 object-cover" onclick="openModal('images/lulzim-website4.jpg')">
                         </div>
                         <div class="image-card cyber-border cyber-glow rounded-md overflow-hidden">
-                            <img src="images/lulzim-website5.jpg" alt="Lulzim Website 5" class="w-full h-48 object-cover">
+                            <img src="images/lulzim-website5.jpg" alt="Lulzim Website 5" class="w-full h-48 object-cover" onclick="openModal('images/lulzim-website5.jpg')">
                         </div>
                         <div class="image-card cyber-border cyber-glow rounded-md overflow-hidden">
-                            <img src="images/lulzim-website6.jpg" alt="Lulzim Website 6" class="w-full h-48 object-cover">
+                            <img src="images/lulzim-website6.jpg" alt="Lulzim Website 6" class="w-full h-48 object-cover" onclick="openModal('images/lulzim-website6.jpg')">
                         </div>
                     </div>
                 </div>
@@ -283,6 +315,29 @@
                         window.location.href = newPage;
                     }, 300);
                 });
+            });
+
+            // Modal functionality
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalClose = document.querySelector('.modal-close');
+
+            window.openModal = function(src) {
+                modalImage.src = src;
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            };
+
+            modalClose.addEventListener('click', function() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
             });
 
             document.body.style.transition = 'opacity 0.3s ease';
