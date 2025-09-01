@@ -1,0 +1,118 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI Pizza App - Samuele Rosselli</title>
+    <meta name="description" content="Details zum Projekt KI Pizza App von Samuele Rosselli, eine benutzerdefinierte Anwendung mit KI-Integration für personalisierte Empfehlungen.">
+    <meta name="keywords" content="KI, App-Entwicklung, E-Commerce, Samuele Rosselli">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        body { background-color: #0a0a0f; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .cyber-grid { background-image: linear-gradient(rgba(0, 168, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 168, 255, 0.1) 1px, transparent 1px); background-size: 40px 40px; }
+        .cyber-border { border: 1px solid rgba(0, 168, 255, 0.3); }
+        .cyber-glow { box-shadow: 0 0 15px rgba(0, 168, 255, 0.5); }
+    </style>
+</head>
+<body class="bg-dark-bg text-gray-200">
+    <nav class="fixed w-full bg-dark-bg/90 backdrop-blur-sm z-50 cyber-border-b border-gray-800">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="index-de.html" class="text-2xl font-bold text-cyber-blue">S.Rosselli</a>
+                <div class="flex items-center space-x-4">
+                    <select id="languageSelect" class="bg-dark-bg text-gray-200 cyber-border rounded-md px-2 py-1">
+                        <option value="en">English</option>
+                        <option value="de" selected>Deutsch</option>
+                    </select>
+                    <a href="index-de.html#portfolio" class="px-4 py-2 bg-cyber-blue text-white rounded-md hover:bg-cyber-green transition-colors">Zurück zum Portfolio</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <section class="min-h-screen flex items-center justify-center cyber-grid py-20">
+        <div class="container mx-auto px-6">
+            <h1 class="text-4xl md:text-5xl font-bold mb-8 text-cyber-blue" data-aos="fade-up">KI Pizza App</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div data-aos="fade-right">
+                    <h2 class="text-2xl font-semibold text-cyber-green mb-4">Projektübersicht</h2>
+                    <p class="text-lg text-gray-300 mb-6">
+                        Entwicklung einer benutzerdefinierten Anwendung für Pizzaliebhaber, die Rezepte, einen Werkzeugshop und KI-gestützte personalisierte Empfehlungen bietet. Die App verbessert das Benutzererlebnis durch intuitive Navigation und E-Commerce-Funktionen.
+                    </p>
+                    <h3 class="text-xl font-semibold text-cyber-blue mb-4">Was ich gemacht habe</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex items-start"><i data-feather="check" class="text-cyber-green mr-2 mt-1"></i> Entwicklung einer reaktionsfähigen mobilen Anwendung mit benutzerfreundlicher Oberfläche.</li>
+                        <li class="flex items-start"><i data-feather="check" class="text-cyber-green mr-2 mt-1"></i> Integration von KI für personalisierte Pizzrezept-Empfehlungen basierend auf Benutzerpräferenzen.</li>
+                        <li class="flex items-start"><i data-feather="check" class="text-cyber-green mr-2 mt-1"></i> Einrichtung eines E-Commerce-Shops für Pizza-Werkzeuge und Zubehör.</li>
+                        <li class="flex items-start"><i data-feather="check" class="text-cyber-green mr-2 mt-1"></i> Sicherstellung sicherer Datenverarbeitung für Benutzerinteraktionen.</li>
+                    </ul>
+                </div>
+                <div data-aos="fade-left">
+                    <h2 class="text-2xl font-semibold text-cyber-green mb-4">Projektbilder</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <img src="images/pizza-app1.jpg" alt="Pizza App Oberfläche" class="w-full h-48 object-cover cyber-border cyber-glow rounded-md">
+                        <img src="images/pizza-app2.jpg" alt="Pizza App E-Commerce" class="w-full h-48 object-cover cyber-border cyber-glow rounded-md">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({ duration: 800, easing: 'ease-in-out', once: true });
+            feather.replace();
+            const languageSelect = document.getElementById('languageSelect');
+            languageSelect.addEventListener('change', function() {
+                const lang = this.value;
+                if (lang === 'en') {
+                    window.location.href = 'ai-pizza-app.html';
+                } else {
+                    window.location.href = 'ai-pizza-app-de.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
